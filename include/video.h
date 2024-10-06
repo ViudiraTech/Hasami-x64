@@ -95,6 +95,12 @@ video_put_string_color(
 	int color
 	);
 
+/* VBE输出映射到串口 */
+VOID
+video_to_serial(
+	int op
+	);
+
 /* 设置前景色 */
 VOID
 set_fore_color(

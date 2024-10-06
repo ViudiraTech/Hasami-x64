@@ -49,7 +49,7 @@ efi_main(
 	efi_init(ImageHandle, SystemTable);
 	ST->ConOut->ClearScreen(ST->ConOut);
 
-	puts(L"BOOTX64 UEFI Bootloader (Version 1.0)\r\n");
+	puts(L"Hasami-x64 (BOOTX64) UEFI Bootloader (Version 1.0)\r\n");
 	puts(L"Copyright (C) 2020 ViudiraTech, All rights reserved.\r\n\n");
 
 	EFI_STATUS status;
@@ -63,7 +63,7 @@ efi_main(
 		puts(L"[ FAIL ] Loading File System\r\n");
 		while (1);
 	}
-	puts(L"[ SUCC ] Loading File System\r\n");
+	puts(L"[ OK ] Loading File System\r\n");
 	status = root->Open(root, &kernel_file, L"\\kernel.elf", EFI_FILE_MODE_READ, 0);
 	if (EFI_ERROR(status)) {
 	puts(L"[ FAIL ] Loading Kernel Files\r\n");
@@ -74,7 +74,7 @@ efi_main(
 	puts(L"[ FAIL ] Loading Kernel Files\r\n");
 	while (1);
 	}
-	puts(L"[ SUCC ] Loading Kernel Files\r\n");
+	puts(L"[ OK ] Loading Kernel Files\r\n");
 
 	Elf64_Ehdr *ehdr = (Elf64_Ehdr *)kernel_buffer;
 	uint64_t kernel_first_addr, kernel_last_addr;
@@ -94,7 +94,7 @@ efi_main(
 			puts(L"[ FAIL ] Loading Graphics\r\n");
 			while (1);
 	}
-	puts(L"[ SUCC ] Loading Graphics\r\n");
+	puts(L"[ OK ] Loading Graphics\r\n");
 
 	BOOT_CONFIG BootConfig;
 	BootConfig.MemoryMap.MapSize = 4096;
@@ -104,7 +104,7 @@ efi_main(
 	BootConfig.MemoryMap.DescriptorVersion = 0;
 
 	GetMMP(&BootConfig.MemoryMap);
-	puts(L"[ SUCC ] Getting Memory Map\r\n\n");
+	puts(L"[ OK ] Getting Memory Map\r\n\n");
 
 	Kernel kernel = (Kernel)entry_addr;
 	puts(L"Operating System Boot Success.\r\n");

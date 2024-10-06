@@ -11,6 +11,7 @@
 
 #include "video.h"
 #include "string.h"
+#include "serial.h"
 
 extern uint8_t ascfont[];
 
@@ -20,6 +21,8 @@ uint32_t fore_color, back_color;
 int32_t x, y;
 int32_t cx, cy;
 uint32_t c_width, c_height;
+
+int vbe_serial = 0;
 
 /* 获取Video信息 */
 VOID
@@ -162,6 +165,7 @@ video_put_char(
 	int color
 	)
 {
+	if (vbe_serial == 1) write_serial(c); // 输出控制台到串口设备
 	if (c == '\n') {
 		video_scroll();
 		cx = 0;
@@ -212,6 +216,18 @@ video_put_string_color(
 		char c = *str;
 		video_put_char(c, color);
 	}
+}
+
+/* VBE输出映射到串口 */
+VOID
+video_to_serial(
+	int op
+	)
+{
+	if (op == 1)
+		vbe_serial = 1;
+	else
+		vbe_serial = 0;
 }
 
 /* 设置前景色 */

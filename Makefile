@@ -74,7 +74,7 @@ run:
 	@mkdir -p ./esp/EFI/BOOT
 	@cp $(BOOTX64_EFI) ./esp/EFI/BOOT
 	@cp $(KERNEL_ELF) ./esp
-	$(QEMU) -bios ./bios/OVMF.fd -net none -drive file=fat:rw:esp,index=0,format=vvfat
+	$(QEMU) -bios ./bios/OVMF.fd -serial stdio -net none -drive file=fat:rw:esp,index=0,format=vvfat
 	@rm -rf ./esp/
 
 .PHONY: qemu_uefi_debug
@@ -82,5 +82,5 @@ run_db:
 	@mkdir -p ./esp/EFI/BOOT
 	@cp $(BOOTX64_EFI) ./esp/EFI/BOOT
 	@cp $(KERNEL_ELF) ./esp
-	$(QEMU) -bios ./bios/OVMF.fd -net none -drive file=fat:rw:esp,index=0,format=vvfat -d in_asm
+	$(QEMU) -bios ./bios/OVMF.fd -serial stdio -net none -drive file=fat:rw:esp,index=0,format=vvfat -d in_asm
 	@rm -rf ./esp/
