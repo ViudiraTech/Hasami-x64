@@ -59,7 +59,7 @@ kernel:
 link:$(KERNEL_O) $(CPP_OBJECTS) $(S_OBJECTS)
 	@echo
 	@echo "\033[32m[Link]\033[0m" Linking Obj Files $(KERNEL_O) ...
-	@$(LD) $(LD_FLAGS) $(KERNEL_ELF) $(KERNEL_O) $(CPP_OBJECTS) $(S_OBJECTS)
+	@$(LD) $(LD_FLAGS) $(KERNEL_ELF) $(KERNEL_O) $(CPP_OBJECTS) $(S_OBJECTS) ./lib/klogo.obj
 
 done:
 	@echo "\033[32m[Done]\033[0m" Compilation complete.

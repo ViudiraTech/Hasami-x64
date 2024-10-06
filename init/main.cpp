@@ -19,6 +19,9 @@ extern "C" {
 #include "version.h"
 #include "gdt.h"
 #include "common.h"
+#include "bmp.h"
+
+extern uint8_t klogo[]; // 声明内核Logo数据
 
 extern "C" VOID
 KernelMain(
@@ -32,6 +35,7 @@ KernelMain(
 	video_clear();	// 清屏
 
 	video_to_serial(1);
+	bmp_analysis((Bmp *)klogo, fbc.horizontal_resolution - 184 - 20, 20, 1);
 	printk("Hasami x64 " KERNL_VERS "(build-%d)\n", KERNL_BUID);			// 打印内核信息
 	printk(PROJK_COPY "\n");												// 打印版权信息
 	printk("This version compiles at " BUILD_DATE " " BUILD_TIME "\n\n");	// 打印编译日期时间
