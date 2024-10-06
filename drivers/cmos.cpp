@@ -1,6 +1,6 @@
 /*
  *
- *		cmos.c
+ *		cmos.cpp
  *		cmos存储器驱动
  *
  *		2024/6/29 By MicroFish
