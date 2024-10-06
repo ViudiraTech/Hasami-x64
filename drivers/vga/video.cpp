@@ -14,7 +14,7 @@
 
 extern uint8_t ascfont[];
 
-uint32_t *VideoMem;
+uint32_t *video_mem;
 uint32_t width, height;
 uint32_t fore_color, back_color;
 int32_t x, y;
@@ -27,7 +27,7 @@ GetVInfo(
 	FrameBufferConfig &fbc
 	)
 {
-	VideoMem = (uint32_t *)fbc.frame_buffer;
+	video_mem = (uint32_t *)fbc.frame_buffer;
 	width = fbc.horizontal_resolution;
 	height = fbc.vertical_resolution;;
 
@@ -48,7 +48,7 @@ video_clear(
 	)
 {
 	for (uint32_t i = 0; i < (width * (height)); i++) {
-		VideoMem[i] = back_color;
+		video_mem[i] = back_color;
 	}
 	x = 2;
 	y = 0;
@@ -63,7 +63,7 @@ video_clear_color(
 {
 	set_back_color(color);
 	for (uint32_t i = 0; i < (width * (height)); i++) {
-		VideoMem[i] = color;
+		video_mem[i] = color;
 	}
 	x = 2;
 	y = 0;
@@ -93,9 +93,9 @@ video_scroll(
 	} else cx++;
 	if ((uint32_t)cy >= c_height) {
 		cy = c_height - 1;
-		memcpy(reinterpret_cast<uint8_t*>(VideoMem), reinterpret_cast<uint8_t*>(VideoMem + width * 16 * sizeof(uint32_t)), width * (height - 16) * sizeof(uint32_t));
+		memcpy(reinterpret_cast<uint8_t*>(video_mem), reinterpret_cast<uint8_t*>(video_mem + width * 16 * sizeof(uint32_t)), width * (height - 16) * sizeof(uint32_t));
 		for (uint32_t i = (width * (height - 16)); i != (width * height); i++) {
-			VideoMem[i] = back_color;
+			video_mem[i] = back_color;
 		}
 	}
 }
@@ -112,7 +112,7 @@ video_draw_pixel(
 		return;
 	}
 	color = (color & 0xff) | (color & 0xff00) | (color & 0xff0000);
-	uint32_t  *p = (uint32_t *)VideoMem + y * width + x;
+	uint32_t  *p = (uint32_t *)video_mem + y * width + x;
 	*p = color;
 }
 
@@ -129,7 +129,7 @@ video_draw_rect(
 	int x, y;
 	for (y = y0; y <= y1; y++) {
 		for (x = x0; x <= x1; x++) {
-			(VideoMem)[y * width + x] = color;
+			(video_mem)[y * width + x] = color;
 		}
 	}
 }
@@ -149,8 +149,8 @@ video_draw_char(
 	for (int i = 0; i < 16; i++) {
 		for (int j = 0; j < 9; j++) {
 			if (font[i] & (0x80 >> j)) {
-				VideoMem[(y + i) * width + x + j] = color;
-			} else VideoMem[(y + i) * width + x + j] = back_color;
+				video_mem[(y + i) * width + x + j] = color;
+			} else video_mem[(y + i) * width + x + j] = back_color;
 		}
 	}
 }
