@@ -16,10 +16,12 @@ KERNEL_ELF		= ./kernel.elf
 MINGW_GCC		= x86_64-w64-mingw32-gcc
 GPP				= g++
 LD				= ld
+ASM				= nasm
 
 GCC_FLAGS		= -W -Wno-missing-field-initializers -Wextra -e efi_main -nostdinc -nostdlib -fno-builtin -Wl,--subsystem,10 -I ./boot/include/ -o
 GPP_FLAGS		= -O2 -W -m64 -Wimplicit-fallthrough=0 -g -ffreestanding -fno-exceptions -fno-rtti -std=c++17 -I ./include/ -I ./boot/include/ -fshort-wchar -c -o
-LD_FLAGS		= -e KernelMain -z norelro --static -o
+ASM_FLAGS		= -f elf64 -g -F stabs
+LD_FLAGS		= -e KernelMain -z norelro --static -m elf_x86_64 -nostdlib -o
 
 QEMU			= qemu-system-x86_64
 
@@ -27,6 +29,8 @@ BOOTX64_C		= ./boot/bootx64.c
 BOOTX64_EFI		= ./bootx64.efi
 CPP_SOURCES		= $(shell find . -name "*.cpp" -type f -not -path "./init/*")
 CPP_OBJECTS		= $(patsubst %.cpp, %.o, $(CPP_SOURCES))
+S_SOURCES		= $(shell find . -name "*.s")
+S_OBJECTS		= $(patsubst %.s, %.o, $(S_SOURCES))
 
 all: info .c.o kernel link done
 
@@ -35,6 +39,10 @@ info:
 	@echo Copyright 2020 ViudiraTech. All Rights Reserved.
 	@echo Based on the GPL-3.0 open source license.
 	@echo
+
+.s.o:
+	@echo "\033[32m[Build]\033[0m" Compiling Assembly $< ...
+	@$(ASM) $(ASM_FLAGS) $<
 
 .c.o:
 	@echo "\033[32m[Build]\033[0m" Compiling Code Files $(BOOTX64_C) ...
@@ -48,10 +56,10 @@ kernel:
 	@echo "\033[32m[Build]\033[0m" Compiling Code Files ./$< ...
 	@$(GPP) ./$< $(GPP_FLAGS) $@
 
-link:$(KERNEL_O) $(CPP_OBJECTS)
+link:$(KERNEL_O) $(CPP_OBJECTS) $(S_OBJECTS)
 	@echo
 	@echo "\033[32m[Link]\033[0m" Linking Obj Files $(KERNEL_O) ...
-	@$(LD) $(LD_FLAGS) $(KERNEL_ELF) $(KERNEL_O) $(CPP_OBJECTS)
+	@$(LD) $(LD_FLAGS) $(KERNEL_ELF) $(KERNEL_O) $(CPP_OBJECTS) $(S_OBJECTS)
 
 done:
 	@echo "\033[32m[Done]\033[0m" Compilation complete.
@@ -59,7 +67,7 @@ done:
 
 .PHONY: clean
 clean:
-	rm -rf $(BOOTX64_EFI) $(KERNEL_O) $(KERNEL_ELF) $(CPP_OBJECTS)
+	rm -rf $(BOOTX64_EFI) $(KERNEL_O) $(KERNEL_ELF) $(CPP_OBJECTS) $(S_OBJECTS)
 
 .PHONY: qemu_uefi
 run:
