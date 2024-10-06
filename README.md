@@ -1,37 +1,44 @@
-# Hasami
+# 欢迎来到 Uinxed 内核项目
 
-#### 介绍
+![](https://img.shields.io/badge/License-GPLv3-blue) ![](https://img.shields.io/badge/Language-3-orange) ![](https://img.shields.io/badge/hardware-x64-green) ![](https://img.shields.io/badge/firmware-UEFI-yellow)
+
+## 简介
+
 一个C语言和C++写的UEFI x86系统内核，GPL-3.0开源协议
 
-#### 软件架构
-软件架构说明
+## 编译要求
 
+1. **操作系统**：必须是Linux系统，例如Debian、Ubuntu等。
+2. **工具安装**：必须安装好gcc、mingw-w64、make和nasm工具。如果需要测试，请安装qemu虚拟机。
 
-#### 安装教程
+## 编译指南
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1. **获取源码**：将源码PULL到本地。
+2. **编译**：在已PULL到本地的项目源码根目录内执行make命令，即可开始编译。
+3. **编译结果**：编译后会生成两个文件：bootx64.efi和kernel.elf，这两个文件分别为UEFI引导程序和内核文件
+4. **清理与测试**：
+   - 输入“make clean”清理所有中间文件及引导和内核。
+   - 输入“make run”即可通过qemu测试。
+   - “make run-db”可以调出调试（控制台显示汇编代码）。
 
-#### 使用说明
+# 贡献者排名
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1. **MicroFish** （23份）
 
-#### 参与贡献
+括弧内仅仅代表初次上传并且未删除的代码等文件数量，不包括修改、整理等。
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+# 全部源码被移除的贡献者
 
+无
 
-#### 特技
+源码因过旧、BUG、或不需要等其他原因被移除，排名仅代表顺序。
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+# 项目所使用的开源代码
+
+- Uinxed-Kernel: [https://gitee.com/ViudiraTech/uinxed-kernel.git/](https://gitee.com/ViudiraTech/uinxed-kernel.git/)
+
+## 版权声明
+
+本项目所有商为ViudiraTech。
+内核源码为GPL-3.0开源协议
+Copyright © 2020 ViudiraTech，保留所有权利。
