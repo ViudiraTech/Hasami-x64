@@ -22,7 +22,7 @@ int32_t x, y;
 int32_t cx, cy;
 uint32_t c_width, c_height;
 
-int vbe_serial = 0;
+int video_serial = 0;
 
 /* 获取Video信息 */
 VOID
@@ -165,7 +165,7 @@ video_put_char(
 	int color
 	)
 {
-	if (vbe_serial == 1) write_serial(c); // 输出控制台到串口设备
+	// if (video_serial == 1) write_serial(c); // 输出控制台到串口设备（此处会导致某些计算机异常卡顿）
 	if (c == '\n') {
 		video_scroll();
 		cx = 0;
@@ -225,9 +225,9 @@ video_to_serial(
 	)
 {
 	if (op == 1)
-		vbe_serial = 1;
+		video_serial = 1;
 	else
-		vbe_serial = 0;
+		video_serial = 0;
 }
 
 /* 设置前景色 */
