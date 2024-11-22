@@ -50,10 +50,10 @@ init_gdt(
 
 	/* 采用 Intel 平坦模型 */
 	gdt_set_gate(0, 0, 0, 0, 0);				// 按照 Intel 文档要求，第一个描述符必须全 0
-	gdt_set_gate(1, 0, 0xFFFFFFFF, 0x9A, 0xCF);	// 指令段
-	gdt_set_gate(2, 0, 0xFFFFFFFF, 0x92, 0xCF);	// 数据段
-	gdt_set_gate(3, 0, 0xFFFFFFFF, 0xFA, 0xCF);	// 用户模式代码段
-	gdt_set_gate(4, 0, 0xFFFFFFFF, 0xF2, 0xCF);	// 用户模式数据段
+	gdt_set_gate(1, 0, 0xFFFFFFFF, 0x9B, 0xA0);	// 指令段
+	gdt_set_gate(2, 0, 0xFFFFFFFF, 0x93, 0xA0);	// 数据段
+	gdt_set_gate(3, 0, 0xFFFFFFFF, 0xFB, 0xA0);	// 用户模式代码段
+	gdt_set_gate(4, 0, 0xFFFFFFFF, 0xF3, 0xA0);	// 用户模式数据段
 
 	asm volatile (
 		"lgdt [gdt_ptr]\n"
@@ -74,6 +74,7 @@ init_gdt(
 
 /* 全局描述符表构造函数，根据下标构造 */
 /* 参数分别是 数组下标、基地址、限长、访问标志，其它访问标志 */
+/* 热知识：64位下，基地址和限长填了也没用 */
 static VOID
 gdt_set_gate(
 	int64_t num,
