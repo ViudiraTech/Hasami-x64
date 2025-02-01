@@ -5,7 +5,7 @@
  *
  *		2024/10/6 By MicroFish
  *		基于 GPL-3.0 开源协议
- *		Copyright © 2020 ViudiraTech，保留所有权利。
+ *		Copyright © 2020 ViudiraTech，保留最终解释权。
  *
  */
 
@@ -34,12 +34,6 @@ typedef struct {
 	uint32_t importantColorCount;
 } __attribute__((packed)) Bmp;
 
-VOID
-bmp_analysis(
-	Bmp *bmp,
-	uint32_t x,
-	uint32_t y,
-	bool isTransparent
-	);
+void bmp_analysis(Bmp *bmp, uint32_t x, uint32_t y, int isTransparent);
 
 #endif // INCLUDE_BMP_H_

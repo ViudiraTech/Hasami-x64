@@ -5,17 +5,14 @@
  *
  *		2024/10/6 By MicroFish
  *		基于 GPL-3.0 开源协议
- *		Copyright © 2020 ViudiraTech，保留所有权利。
+ *		Copyright © 2020 ViudiraTech，保留最终解释权。
  *
  */
 
 #include "math.h"
 
 /* sin运算 */
-double
-sin(
-	double x
-	)
+double sin(double x)
 {
 	asm volatile("fldl %0 \n"
                  "fsin \n"
@@ -25,10 +22,7 @@ sin(
 }
 
 /* cos运算 */
-double
-cos(
-	double x
-	)
+double cos(double x)
 {
 	asm volatile("fldl %0 \n"
                  "fcos \n"
@@ -38,10 +32,7 @@ cos(
 }
 
 /* tan运算 */
-double
-tan(
-	double x
-	)
+double tan(double x)
 {
 	asm volatile("fldl %0 \n"
                  "fptan \n"
@@ -52,10 +43,7 @@ tan(
 }
 
 /* sqrt运算 */
-double
-sqrt(
-	double x
-	)
+double sqrt(double x)
 {
 	asm volatile("fldl %0 \n"
                  "fsqrt \n"
@@ -65,10 +53,7 @@ sqrt(
 }
 
 /* log2运算 */
-double
-log2(
-	double x
-	)
+double log2(double x)
 {
 	asm volatile("fld1 \n"
                  "fldl %0 \n"

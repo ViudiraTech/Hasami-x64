@@ -5,7 +5,7 @@
  *
  *		2024/10/6 By MicroFish
  *		基于 GPL-3.0 开源协议
- *		Copyright © 2020 ViudiraTech，保留所有权利。
+ *		Copyright © 2020 ViudiraTech，保留最终解释权。
  *
  */
 
@@ -23,24 +23,10 @@ gdt_entry_t gdt_entries[GDT_LENGTH];
 /* GDTR */
 gdt_ptr_t gdt_ptr;
 
-static
-VOID
-gdt_set_gate(
-	int64_t num,
-	uint64_t base,
-	uint64_t limit,
-	uint8_t access,
-	uint8_t gran
-	);
-
-/* 声明内核栈地址 */
-extern "C" uint64_t stack;
+static void gdt_set_gate(int64_t num, uint64_t base, uint64_t limit, uint8_t access, uint8_t gran);
 
 /* 初始化全局描述符表 */
-VOID
-init_gdt(
-	VOID
-	)
+void init_gdt(void)
 {
 	print_busy("Initializing the global descriptor table...\r"); // 提示用户正在初始化全局描述符表，并回到行首等待覆盖
 
@@ -73,24 +59,13 @@ init_gdt(
 }
 
 /* 全局描述符表构造函数，根据下标构造 */
-/* 参数分别是 数组下标、基地址、限长、访问标志，其它访问标志 */
-/* 热知识：64位下，基地址和限长填了也没用 */
-static VOID
-gdt_set_gate(
-	int64_t num,
-	uint64_t base,
-	uint64_t limit,
-	uint8_t access,
-	uint8_t gran
-	)
+static void gdt_set_gate(int64_t num, uint64_t base, uint64_t limit, uint8_t access, uint8_t gran)
 {
 	gdt_entries[num].base_low		= (base & 0xFFFF);
 	gdt_entries[num].base_middle	= (base >> 16) & 0xFF;
 	gdt_entries[num].base_high		= (base >> 24) & 0xFF;
-
 	gdt_entries[num].limit_low		= (limit & 0xFFFF);
 	gdt_entries[num].granularity	= (limit >> 16) & 0x0F;
-
 	gdt_entries[num].granularity	|= gran & 0xF0;
 	gdt_entries[num].access			= access;
 }

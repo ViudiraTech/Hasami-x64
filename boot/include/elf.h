@@ -5,7 +5,7 @@
  *
  *		2024/10/6 By MicroFish
  *		基于 GPL-3.0 开源协议
- *		Copyright © 2020 ViudiraTech，保留所有权利。
+ *		Copyright © 2020 ViudiraTech，保留最终解释权。
  *
  */
 
@@ -16,8 +16,7 @@
 
 #define PT_LOAD 1
 
-typedef struct
-{
+typedef struct {
 	uint32_t p_type;	/* Segment type */
 	uint32_t p_flags;	/* Segment flags */
 	uint64_t p_offset;	/* Segment file offset */
@@ -28,8 +27,7 @@ typedef struct
 	uint64_t p_align;	/* Segment alignment */
 } Elf64_Phdr;
 
-typedef struct
-{
+typedef struct {
 	uint8_t e_ident[16];	/* Magic number and other info */
 	uint16_t e_type;		/* Object file type */
 	uint16_t e_machine;		/* Architecture */
@@ -46,12 +44,7 @@ typedef struct
 	uint16_t e_shstrndx;	/* Section header string table index */
 } Elf64_Ehdr;
 
-VOID
-CalcLoadAddressRange(
-	Elf64_Ehdr *ehdr,
-	uint64_t *first,
-	uint64_t *last
-	)
+void CalcLoadAddressRange(Elf64_Ehdr *ehdr, uint64_t *first, uint64_t *last)
 {
 	Elf64_Phdr *phdr = (Elf64_Phdr *) ((uint64_t) ehdr + ehdr->e_phoff); // 第一个 program header 地址
 	*first = 0xffffffffffffffff; // uint64_t最大值
@@ -64,18 +57,15 @@ CalcLoadAddressRange(
 	}
 }
 
-VOID
-CopyLoadSegments(
-	Elf64_Ehdr *ehdr
-	)
+void CopyLoadSegments(Elf64_Ehdr *ehdr)
 {
 	Elf64_Phdr *phdr = (Elf64_Phdr *) ((uint64_t) ehdr + ehdr->e_phoff); // 第一个 program header 地址
 	for (uint16_t i = 0; i < ehdr->e_phnum; i++) { // 遍历每一个 program header
 		if (phdr[i].p_type != PT_LOAD) continue; // 只关心LOAD段
 		uint64_t segm_in_file = (uint64_t) ehdr + phdr[i].p_offset; // 段在文件中的位置
-		xmemcpy((VOID *) phdr[i].p_vaddr, (VOID *) segm_in_file, phdr[i].p_filesz); // 将文件中大小的部分copy过去
+		xmemcpy((void *) phdr[i].p_vaddr, (void *) segm_in_file, phdr[i].p_filesz); // 将文件中大小的部分copy过去
 		uint64_t remain_bytes = phdr[i].p_memsz - phdr[i].p_filesz; // 两者之差
-		xmemset((VOID *) (phdr[i].p_vaddr + phdr[i].p_filesz), 0, remain_bytes); // 赋值为0
+		xmemset((void *) (phdr[i].p_vaddr + phdr[i].p_filesz), 0, remain_bytes); // 赋值为0
 	}
 }
 

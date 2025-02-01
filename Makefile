@@ -11,7 +11,7 @@
 
 KERNEL_CPP		= ./init/main.cpp
 KERNEL_O		= ./init/main.o
-KERNEL_ELF		= ./kernel.elf
+KERNEL_ELF		= ./HsImage
 
 MINGW_GCC		= x86_64-w64-mingw32-gcc
 GPP				= g++
@@ -21,7 +21,7 @@ ASM				= nasm
 GCC_FLAGS		= -W -Wno-missing-field-initializers -Wextra -e efi_main -nostdinc -nostdlib -fno-builtin -Wl,--subsystem,10 -I ./boot/include/ -o
 GPP_FLAGS		= -O2 -W -m64 -Wimplicit-fallthrough=0 -g -ffreestanding -fno-exceptions -fno-rtti -std=c++17 -I ./include/ -I ./boot/include/ -fshort-wchar -c -o
 ASM_FLAGS		= -f elf64 -g -F stabs
-LD_FLAGS		= -e KernelMain -z norelro --static -m elf_x86_64 -nostdlib -o
+LD_FLAGS		= -e kernel_entry -z norelro --static -m elf_x86_64 -nostdlib -o
 
 QEMU			= qemu-system-x86_64
 
@@ -36,7 +36,7 @@ all: info .c.o kernel link done
 
 info:
 	@echo Hasami-x64 Compile Script.
-	@echo Copyright 2020 ViudiraTech. All Rights Reserved.
+	@echo Copyright 2020 ViudiraTech. All rights interpretation reserved.
 	@echo Based on the GPL-3.0 open source license.
 	@echo
 
@@ -59,7 +59,7 @@ kernel:
 link:$(KERNEL_O) $(CPP_OBJECTS) $(S_OBJECTS)
 	@echo
 	@echo "\033[32m[Link]\033[0m" Linking Obj Files $(KERNEL_O) ...
-	@$(LD) $(LD_FLAGS) $(KERNEL_ELF) $(KERNEL_O) $(CPP_OBJECTS) $(S_OBJECTS) ./lib/klogo.obj
+	@$(LD) $(LD_FLAGS) $(KERNEL_ELF) $(KERNEL_O) $(CPP_OBJECTS) $(S_OBJECTS) ./lib/klogo.lib
 
 done:
 	@echo "\033[32m[Done]\033[0m" Compilation complete.
@@ -74,7 +74,7 @@ run:
 	@mkdir -p ./esp/EFI/BOOT
 	@cp $(BOOTX64_EFI) ./esp/EFI/BOOT
 	@cp $(KERNEL_ELF) ./esp
-	$(QEMU) -bios ./bios/OVMF.fd -serial stdio -net none -drive file=fat:rw:esp,index=0,format=vvfat
+	$(QEMU) -bios ./OVMF.fd -serial stdio -net none -drive file=fat:rw:esp,index=0,format=vvfat
 	@rm -rf ./esp/
 
 .PHONY: qemu_uefi_debug
@@ -82,5 +82,5 @@ run_db:
 	@mkdir -p ./esp/EFI/BOOT
 	@cp $(BOOTX64_EFI) ./esp/EFI/BOOT
 	@cp $(KERNEL_ELF) ./esp
-	$(QEMU) -bios ./bios/OVMF.fd -serial stdio -net none -drive file=fat:rw:esp,index=0,format=vvfat -d in_asm
+	$(QEMU) -bios ./OVMF.fd -serial stdio -net none -drive file=fat:rw:esp,index=0,format=vvfat -d in_asm
 	@rm -rf ./esp/

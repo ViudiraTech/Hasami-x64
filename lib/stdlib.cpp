@@ -5,7 +5,7 @@
  *
  *		2024/10/6 By MicroFish
  *		基于 GPL-3.0 开源协议
- *		Copyright © 2020 ViudiraTech，保留所有权利。
+ *		Copyright © 2020 ViudiraTech，保留最终解释权。
  *
  */
 
@@ -13,37 +13,25 @@
 #include "string.h"
 
 /* 延迟 */
-VOID
-delay(
-	uint32_t count
-	)
+void delay(uint32_t count)
 {
 	while (count--);
 }
 
 /* 阻塞函数 */
-VOID
-hang(
-	VOID
-	)
+void hang(void)
 {
-	while (true);
+	while (1);
 }
 
 /* 判断是否是数字 */
-bool
-isdigit(
-	int c
-	)
+int isdigit(int c)
 {
 	return c >= '0' && c <= '9';
 }
 
 /* 将字符串数字转换为整数数字 */
-int
-atoi(
-	char* pstr
-	)
+int atoi(char* pstr)
 {
 	int ret_integer = 0;
 	int integer_sign = 1;
@@ -60,10 +48,7 @@ atoi(
 }
 
 /* 从文件件路径中获取文件名 */
-char
-*get_filename(
-	char *path
-	)
+char *get_filename(char *path)
 {
 	char ch = '/';
 	char *filename = strchr(path, ch) + 1;
@@ -71,12 +56,7 @@ char
 }
 
 /* 把浮点数转换成字符数组 */
-char
-*ftoa(
-	double f,
-	char *buf,
-	int precision
-	)
+char *ftoa(double f, char *buf, int precision)
 {
 	char * ptr = buf;
 	char * p = ptr;

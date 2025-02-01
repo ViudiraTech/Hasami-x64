@@ -5,7 +5,7 @@
  *
  *		2024/10/6 By MicroFish
  *		基于 GPL-3.0 开源协议
- *		Copyright © 2020 ViudiraTech，保留所有权利。
+ *		Copyright © 2020 ViudiraTech，保留最终解释权。
  *
  */
 
@@ -25,10 +25,7 @@ uint32_t c_width, c_height;
 int video_serial = 0;
 
 /* 获取Video信息 */
-VOID
-GetVInfo(
-	FrameBufferConfig &fbc
-	)
+void GetVInfo(FrameBufferConfig &fbc)
 {
 	video_mem = (uint32_t *)fbc.frame_buffer;
 	width = fbc.horizontal_resolution;
@@ -45,10 +42,7 @@ GetVInfo(
 }
 
 /* 清屏（默认颜色） */
-VOID
-video_clear(
-	VOID
-	)
+void video_clear(void)
 {
 	for (uint32_t i = 0; i < (width * (height)); i++) {
 		video_mem[i] = back_color;
@@ -59,10 +53,7 @@ video_clear(
 }
 
 /* 清屏（带颜色） */
-VOID
-video_clear_color(
-	int color
-	)
+void video_clear_color(int color)
 {
 	set_back_color(color);
 	for (uint32_t i = 0; i < (width * (height)); i++) {
@@ -74,10 +65,7 @@ video_clear_color(
 }
 
 /* 打印一个空行 */
-VOID
-video_write_newline(
-	VOID
-	)
+void video_write_newline(void)
 {
 	video_scroll();
 	cx = 0;
@@ -85,10 +73,7 @@ video_write_newline(
 }
 
 /* 屏幕滚动操作 */
-VOID
-video_scroll(
-	VOID
-	)
+void video_scroll(void)
 {
 	if ((uint32_t)cx > c_width) {
 		cx = 0;
@@ -104,12 +89,7 @@ video_scroll(
 }
 
 /* 在图形界面上进行像素绘制 */
-VOID
-video_draw_pixel(
-	uint32_t x,
-	uint32_t y,
-	uint32_t color
-	)
+void video_draw_pixel(uint32_t x, uint32_t y, uint32_t color)
 {
 	if (x >= width || y >= height) {
 		return;
@@ -120,14 +100,7 @@ video_draw_pixel(
 }
 
 /* 在图形界面指定坐标绘制一个矩阵 */
-VOID
-video_draw_rect(
-	int x0,
-	int y0,
-	int x1,
-	int y1,
-	int color
-	)
+void video_draw_rect(int x0, int y0, int x1, int y1, int color)
 {
 	int x, y;
 	for (y = y0; y <= y1; y++) {
@@ -138,13 +111,7 @@ video_draw_rect(
 }
 
 /* 在图形界面指定坐标上显示字符 */
-VOID
-video_draw_char(
-	char c,
-	int32_t x,
-	int32_t y,
-	int color
-	)
+void video_draw_char(char c, int32_t x, int32_t y, int color)
 {
 	uint8_t *font = ascfont;
 	font += c * 16;
@@ -159,11 +126,7 @@ video_draw_char(
 }
 
 /* 在图形界面指定坐标上打印字符 */
-VOID
-video_put_char(
-	char c,
-	int color
-	)
+void video_put_char(char c, int color)
 {
 	// if (video_serial == 1) write_serial(c); // 输出控制台到串口设备（此处会导致某些计算机异常卡顿）
 	if (c == '\n') {
@@ -194,10 +157,7 @@ video_put_char(
 }
 
 /* 在图形界面指定坐标上打印字符串（默认颜色） */
-VOID
-video_put_string(
-	const char *str
-	)
+void video_put_string(const char *str)
 {
 	for (;*str; ++str) {
 		char c = *str;
@@ -206,11 +166,7 @@ video_put_string(
 }
 
 /* 在图形界面指定坐标上打印字符串（带颜色） */
-VOID
-video_put_string_color(
-	const char *str,
-	int color
-	)
+void video_put_string_color(const char *str, int color)
 {
 	for (;*str; ++str) {
 		char c = *str;
@@ -219,10 +175,7 @@ video_put_string_color(
 }
 
 /* VBE输出映射到串口 */
-VOID
-video_to_serial(
-	int op
-	)
+void video_to_serial(int op)
 {
 	if (op == 1)
 		video_serial = 1;
@@ -231,19 +184,13 @@ video_to_serial(
 }
 
 /* 设置前景色 */
-VOID
-set_fore_color(
-	int color
-	)
+void set_fore_color(int color)
 {
 	fore_color = color;
 }
 
 /* 设置背景色 */
-VOID
-set_back_color(
-	int color
-	)
+void set_back_color(int color)
 {
 	back_color = color;
 }

@@ -5,7 +5,7 @@
  *
  *		2024/10/6 By MicroFish
  *		基于 GPL-3.0 开源协议
- *		Copyright © 2020 ViudiraTech，保留所有权利。
+ *		Copyright © 2020 ViudiraTech，保留最终解释权。
  *
  */
 
@@ -13,7 +13,7 @@
 #include "elf.h"
 
 struct BOOT_CONFIG;
-typedef VOID (*__attribute__((sysv_abi)) Kernel)(const struct FrameBufferConfig *, struct EFI_SYSTEM_TABLE *, struct BOOT_CONFIG *);
+typedef void (*__attribute__((sysv_abi)) Kernel)(const struct FrameBufferConfig *, struct EFI_SYSTEM_TABLE *, struct BOOT_CONFIG *);
 
 struct EFI_SYSTEM_TABLE					*ST;
 struct EFI_BOOT_SERVICES				*BS;
@@ -39,12 +39,7 @@ struct EFI_GUID spp_guid = {
 };
 
 /* efi入口 */
-EFI_STATUS
-EFIAPI
-efi_main(
-	EFI_HANDLE ImageHandle,
-	struct EFI_SYSTEM_TABLE *SystemTable
-	)
+EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle, struct EFI_SYSTEM_TABLE *SystemTable)
 {
 	efi_init(ImageHandle, SystemTable);
 	ST->ConOut->ClearScreen(ST->ConOut);
@@ -56,7 +51,7 @@ efi_main(
 	EFI_PHYSICAL_ADDRESS entry_addr;
 	struct EFI_FILE_PROTOCOL *root, *kernel_file;
 	uint64_t kernel_size = 4194304;
-	VOID *kernel_buffer = malloc(kernel_size);
+	void *kernel_buffer = malloc(kernel_size);
 
 	status = SFSP->OpenVolume(SFSP, &root);
 	if (EFI_ERROR(status)) {
@@ -64,7 +59,7 @@ efi_main(
 		while (1);
 	}
 	puts(L"[ OK ] Loading File System\r\n");
-	status = root->Open(root, &kernel_file, L"\\kernel.elf", EFI_FILE_MODE_READ, 0);
+	status = root->Open(root, &kernel_file, L"\\HsImage", EFI_FILE_MODE_READ, 0);
 	if (EFI_ERROR(status)) {
 	puts(L"[ FAIL ] Loading Kernel Files\r\n");
 	while (1);
@@ -98,7 +93,7 @@ efi_main(
 
 	BOOT_CONFIG BootConfig;
 	BootConfig.MemoryMap.MapSize = 4096;
-	BootConfig.MemoryMap.Buffer = NULL;
+	BootConfig.MemoryMap.Buffer = 0;
 	BootConfig.MemoryMap.MapKey = 0;
 	BootConfig.MemoryMap.DescriptorSize = 0;
 	BootConfig.MemoryMap.DescriptorVersion = 0;
@@ -113,60 +108,44 @@ efi_main(
 }
 
 /* 初始化efi */
-VOID
-efi_init(
-	EFI_HANDLE ImageHandle,
-	struct EFI_SYSTEM_TABLE *SystemTable
-	)
+void efi_init(EFI_HANDLE ImageHandle, struct EFI_SYSTEM_TABLE *SystemTable)
 {
 	ST = SystemTable;
 	BS = SystemTable->BootServices;
 	IM = ImageHandle;
 
 	// init
-	BS->SetWatchdogTimer(0, 0, 0, NULL);
-	BS->LocateProtocol(&gop_guid, NULL, (void **)&GOP);
-	BS->OpenProtocol(ImageHandle, &lip_guid, (void **)&LIP, ImageHandle, NULL, EFI_OPEN_PROTOCOL_GET_PROTOCOL);
-	BS->OpenProtocol(LIP->DeviceHandle, &sfsp_guid, (void **)&SFSP, ImageHandle, NULL, EFI_OPEN_PROTOCOL_BY_HANDLE_PROTOCOL);
+	BS->SetWatchdogTimer(0, 0, 0, 0);
+	BS->LocateProtocol(&gop_guid, 0, (void **)&GOP);
+	BS->OpenProtocol(ImageHandle, &lip_guid, (void **)&LIP, ImageHandle, 0, EFI_OPEN_PROTOCOL_GET_PROTOCOL);
+	BS->OpenProtocol(LIP->DeviceHandle, &sfsp_guid, (void **)&SFSP, ImageHandle, 0, EFI_OPEN_PROTOCOL_BY_HANDLE_PROTOCOL);
 }
 
 /* 打印字符串 */
-VOID
-puts(
-	unsigned short *s
-	)
+void puts(unsigned short *s)
 {
 	ST->ConOut->OutputString(ST->ConOut, s);
 }
 
 /* 分配固定大小的内存 */
-VOID
-*malloc(
-	int buf_size
-	)
+void *malloc(int buf_size)
 {
-	VOID *res;
+	void *res;
 	unsigned long long status;
 
 	// 分配内存，第一个参数是判断LIP是否存在，如果存在就直接拿过来用
 	status = BS->AllocatePool(LIP ? LIP->ImageDataType : EfiLoaderData, buf_size, &res);
-	if (status!=EFI_SUCCESS) return NULL;
+	if (status!=EFI_SUCCESS) return 0;
 	return res;
 }
 
 /* 释放内存 */
-VOID
-free(
-	VOID *buf
-	)
+void free(void *buf)
 {
   BS->FreePool(buf);
 }
 
-EFI_STATUS
-GetMMP(
-	MEMORY_MAP *MemoryMap
-	)
+EFI_STATUS GetMMP(MEMORY_MAP *MemoryMap)
 {
 	EFI_STATUS GetMemoryMapStatus = EFI_SUCCESS;
 
@@ -183,7 +162,7 @@ GetMMP(
 	) == EFI_BUFFER_TOO_SMALL) {
 		if (MemoryMap->Buffer) {
 			free(MemoryMap->Buffer);
-			MemoryMap->Buffer = NULL;
+			MemoryMap->Buffer = 0;
 		}
 
 		/* 重新分配更大的缓冲区 */

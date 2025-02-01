@@ -5,7 +5,7 @@
  *
  *		2024/10/6 By MicroFish
  *		基于 GPL-3.0 开源协议
- *		Copyright © 2020 ViudiraTech，保留所有权利。
+ *		Copyright © 2020 ViudiraTech，保留最终解释权。
  *
  */
 
@@ -20,8 +20,7 @@
 
 #include "bootx64.h"
 
-typedef struct __packed
-{
+typedef struct __packed {
 	uint64_t MapSize;
 	VOID *Buffer;
 	uint64_t MapKey;

@@ -5,7 +5,7 @@
  *
  *		2024/10/6 By MicroFish
  *		基于 GPL-3.0 开源协议
- *		Copyright © 2020 ViudiraTech，保留所有权利。
+ *		Copyright © 2020 ViudiraTech，保留最终解释权。
  *
  */
 
@@ -16,10 +16,7 @@
 #include "printk.h"
 
 /* 打印带有”[ ** ]“的字符串 */
-VOID
-print_busy(
-	const char *str
-	)
+void print_busy(const char *str)
 {
 	printk("[");
 	printk_color(0xffffff, " ** ");
@@ -28,10 +25,7 @@ print_busy(
 }
 
 /* 打印带有”[ OK ]“的字符串 */
-VOID
-print_succ(
-	const char *str
-	)
+void print_succ(const char *str)
 {
 	printk("[");
 	printk_color(0x00ff00, " OK ");
@@ -40,10 +34,7 @@ print_succ(
 }
 
 /* 打印带有”[ WARN ]“的字符串 */
-VOID
-print_warn(
-	const char *str
-	)
+void print_warn(const char *str)
 {
 	printk("[");
 	printk_color(0xffff00, "WARN");
@@ -52,10 +43,7 @@ print_warn(
 }
 
 /* 打印带有”[ ERRO ]“的字符串 */
-VOID
-print_erro(
-	const char *str
-	)
+void print_erro(const char *str)
 {
 	printk("[");
 	printk_color(0xff0000, "ERRO");
@@ -64,14 +52,10 @@ print_erro(
 }
 
 /* 内核打印字符串 */
-VOID
-printk(
-	const char *format,
-	...
-	)
+void printk(const char *format, ...)
 {
 	/* 避免频繁创建临时变量，内核的栈很宝贵 */
-	static char buff[1024];
+	static char buff[2048];
 	va_list args;
 	int i;
 
@@ -84,15 +68,10 @@ printk(
 }
 
 /* 内核打印带颜色的字符串 */
-VOID
-printk_color(
-	int fore,
-	const char *format,
-	...
-	)
+void printk_color(int fore, const char *format, ...)
 {
 	/* 避免频繁创建临时变量，内核的栈很宝贵 */
-	static char buff[1024];
+	static char buff[2048];
 	va_list args;
 	int i;
 
@@ -107,10 +86,7 @@ printk_color(
 #define is_digit(c)	((c) >= '0' && (c) <= '9')
 
 /* 跳过字符串中的数字并将这些连续数字的值返回 */
-static int
-skip_atoi(
-	const char **s
-	)
+static int skip_atoi(const char **s)
 {
 	int i = 0;
 
@@ -134,15 +110,7 @@ skip_atoi(
         __res; })
 
 /* 将整数格式化为字符串 */
-static char
-*number(
-	char *str,
-	int num,
-	int base,
-	int size,
-	int precision,
-	int type
-	)
+static char *number(char *str, int num, int base, int size, int precision, int type)
 {
 	char c, sign, tmp[36];
 	const char *digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -223,12 +191,7 @@ static char
 }
 
 /* 格式化字符串并将其输出到一个字符数组中 */
-int
-vsprintf(
-	char *buff,
-	const char *format,
-	va_list args
-	)
+int vsprintf(char *buff, const char *format, va_list args)
 {
 	int len;
 	int i;
@@ -337,7 +300,7 @@ vsprintf(
 				field_width = 8;
 				flags |= ZEROPAD;
 			}
-			str = number(str, (unsigned long) va_arg(args, VOID *), 16,
+			str = number(str, (unsigned long) va_arg(args, void *), 16,
 				field_width, precision, flags);
 			break;
 		case 'x':
@@ -380,12 +343,7 @@ vsprintf(
 }
 
 /* 将格式化的输出存储在字符数组中 */
-VOID
-sprintf(
-	char *str,
-	const char *fmt,
-	...
-	)
+void sprintf(char *str, const char *fmt, ...)
 {
 	va_list arg;
 	va_start(arg,fmt);

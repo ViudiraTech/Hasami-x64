@@ -5,11 +5,12 @@
  *
  *		2024/10/6 By MicroFish
  *		基于 GPL-3.0 开源协议
- *		Copyright © 2020 ViudiraTech，保留所有权利。
+ *		Copyright © 2020 ViudiraTech，保留最终解释权。
  *
  */
 
-#pragma once
+#ifndef INCLUDE_TYPES_H_
+#define INCLUDE_TYPES_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -120,3 +121,5 @@ typedef void VOID;
 #ifdef __cplusplus
 }
 #endif
+
+#endif // INCLUDE_TYPES_H_

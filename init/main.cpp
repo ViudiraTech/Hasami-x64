@@ -5,7 +5,7 @@
  *
  *		2024/10/6 By MicroFish
  *		基于 GPL-3.0 开源协议
- *		Copyright © 2020 ViudiraTech，保留所有权利。
+ *		Copyright © 2020 ViudiraTech，保留最终解释权。
  *
  */
 
@@ -23,18 +23,12 @@ extern "C" {
 
 extern uint8_t klogo[]; // 声明内核Logo数据
 
-extern "C" VOID
-KernelMain(
-	FrameBufferConfig &fbc,
-	EFI_SYSTEM_TABLE &SystemTable,
-	BOOT_CONFIG *BootConfig
-	)
+extern "C" void kernel_entry(FrameBufferConfig &fbc, EFI_SYSTEM_TABLE &SystemTable, BOOT_CONFIG *BootConfig)
 {
 	disable_intr();	// 关闭中断
 	GetVInfo(fbc);	// 获取Video信息
 	video_clear();	// 清屏
 
-	video_to_serial(1);
 	bmp_analysis((Bmp *)klogo, fbc.horizontal_resolution - 184 - 20, 20, 1);
 	printk("Hasami x64 " KERNL_VERS "(build-%d)\n", KERNL_BUID);			// 打印内核信息
 	printk(PROJK_COPY "\n");												// 打印版权信息
@@ -43,6 +37,5 @@ KernelMain(
 	printk("Initializing operating system kernel components.\n");			// 提示用户正在初始化内核
 	init_gdt(); // 初始化GDT
 
-	video_to_serial(0);
 	while (1);
 }

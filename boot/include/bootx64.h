@@ -5,7 +5,7 @@
  *
  *		2024/10/6 By MicroFish
  *		基于 GPL-3.0 开源协议
- *		Copyright © 2020 ViudiraTech，保留所有权利。
+ *		Copyright © 2020 ViudiraTech，保留最终解释权。
  *
  */
 
@@ -70,14 +70,13 @@
 #define min(a, b)								((a) < (b) ? (a) : (b))
 #define max(a, b)								((a) < (b) ? (b) : (a))
 
-typedef VOID *EFI_HANDLE;
-typedef VOID *EFI_EVENT;
+typedef void *EFI_HANDLE;
+typedef void *EFI_EVENT;
 typedef uint64_t EFI_STATUS;
 typedef uint64_t EFI_PHYSICAL_ADDRESS;
 typedef uint64_t EFI_VIRTUAL_ADDRESS;
 
-typedef struct
-{
+typedef struct {
 	MEMORY_MAP MemoryMap;
 } BOOT_CONFIG;
 
@@ -123,30 +122,20 @@ enum EFI_GRAPHICS_PIXEL_FORMAT {
 	PixelFormatMax
 };
 
-static VOID
-xmemset(
-	VOID *dst_,
-	uint8_t value,
-	uint64_t size
-	)
+static void xmemset(void *dst_, uint8_t value, uint64_t size)
 {
 	uint8_t *dst = (uint8_t *)dst_;
 	while (size-- > 0)
 		*dst++ = value;
 }
 
-static VOID
-*xmemcpy(
-	VOID *dst_,
-	const VOID *src_,
-	uint64_t size
-	)
+static void *xmemcpy(void *dst_, const void *src_, uint64_t size)
 {
 	uint8_t *dst = (uint8_t *)dst_;
 	const uint8_t *src = (uint8_t *)src_;
 	while (size-- > 0)
 		*dst++ = *src++;
-	return (VOID *)src_;
+	return (void *)src_;
 }
 
 struct EFI_GUID {
@@ -169,9 +158,9 @@ struct EFI_FILE_PROTOCOL {
 	EFIAPI EFI_STATUS (*Close)(struct EFI_FILE_PROTOCOL *This);
 	uint64_t _buf2;
 	EFIAPI
-	EFI_STATUS (*Read)(struct EFI_FILE_PROTOCOL *This, uint64_t *BufferSize, VOID *Buffer);
+	EFI_STATUS (*Read)(struct EFI_FILE_PROTOCOL *This, uint64_t *BufferSize, void *Buffer);
 	EFIAPI
-	EFI_STATUS (*Write)(struct EFI_FILE_PROTOCOL *This, uint64_t *BufferSize, VOID *Buffer);
+	EFI_STATUS (*Write)(struct EFI_FILE_PROTOCOL *This, uint64_t *BufferSize, void *Buffer);
 	uint64_t _buf3[4];
 	EFIAPI EFI_STATUS (*Flush)(struct EFI_FILE_PROTOCOL *This);
 };
@@ -208,8 +197,8 @@ struct EFI_BOOT_SERVICES {
 	EFIAPI EFI_STATUS (*FreePages)(EFI_PHYSICAL_ADDRESS Memory, uint64_t Pages);
 	EFIAPI EFI_STATUS (*GetMemoryMap)(uint64_t *MemoryMapSize, EFI_MEMORY_DESCRIPTOR *MemoryMap,
 	uint64_t *MapKey, uint64_t *DescriptorSize, uint32_t *DescriptorVersion);
-	EFIAPI EFI_STATUS (*AllocatePool)(enum EFI_MEMORY_TYPE PoolType, uint64_t Size, VOID **Buffer);
-	EFIAPI EFI_STATUS (*FreePool)(VOID *Buffer);
+	EFIAPI EFI_STATUS (*AllocatePool)(enum EFI_MEMORY_TYPE PoolType, uint64_t Size, void **Buffer);
+	EFIAPI EFI_STATUS (*FreePool)(void *Buffer);
 
 	/* Event & Timer Services */
 	uint64_t _buf4[2];
@@ -233,14 +222,14 @@ struct EFI_BOOT_SERVICES {
 	/* Open and Close Protocol Services */
 	EFIAPI
 	EFI_STATUS(*OpenProtocol)
-	(EFI_HANDLE Handle, struct EFI_GUID *Protocol, VOID **Interface, EFI_HANDLE AgentHandle,
+	(EFI_HANDLE Handle, struct EFI_GUID *Protocol, void **Interface, EFI_HANDLE AgentHandle,
 	EFI_HANDLE ControllerHandle, uint32_t Attributes);
 	uint64_t _buf9[2];
 
 	/* Library Services */
 	uint64_t _buf10[2];
 	EFIAPI
-	EFI_STATUS (*LocateProtocol)(struct EFI_GUID *Protocol, VOID *Registration, VOID **Interface);
+	EFI_STATUS (*LocateProtocol)(struct EFI_GUID *Protocol, void *Registration, void **Interface);
 	uint64_t _buf10_2[2];
 
 	/* 32-bit CRC Services */
@@ -256,13 +245,13 @@ struct EFI_LOADED_IMAGE_PROTOCOL {
 	struct EFI_SYSTEM_TABLE *SystemTable;
 
 	EFI_HANDLE DeviceHandle;
-	VOID *FilePath;
-	VOID *Reserved;
+	void *FilePath;
+	void *Reserved;
 
 	uint32_t LoadOptionsSize;
-	VOID *LoadOptions;
+	void *LoadOptions;
 
-	VOID *ImageBase;
+	void *ImageBase;
 	uint64_t ImageSize;
 	enum EFI_MEMORY_TYPE ImageCodeType;
 	enum EFI_MEMORY_TYPE ImageDataType;
@@ -294,33 +283,17 @@ struct EFI_SIMPLE_FILE_SYSTEM_PROTOCOL {
 };
 
 /* 初始化efi */
-VOID
-efi_init(
-	EFI_HANDLE ImageHandle,
-	struct EFI_SYSTEM_TABLE *SystemTable
-	);
+void efi_init(EFI_HANDLE ImageHandle, struct EFI_SYSTEM_TABLE *SystemTable);
 
 /* 打印字符串 */
-VOID
-puts(
-	unsigned short *s
-	);
+void puts(unsigned short *s);
 
 /* 分配固定大小的内存 */
-VOID
-*malloc(
-	int buf_size
-	);
+void *malloc(int buf_size);
 
 /* 释放内存 */
-VOID
-free(
-	VOID *buf
-	);
+void free(void *buf);
 
-EFI_STATUS
-GetMMP(
-	MEMORY_MAP *MemoryMap
-	);
+EFI_STATUS GetMMP(MEMORY_MAP *MemoryMap);
 
 #endif // INCLUDE_BOOTX64_H_

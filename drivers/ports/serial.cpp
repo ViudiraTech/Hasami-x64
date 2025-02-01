@@ -5,7 +5,7 @@
  *
  *		2024/10/7 By MicroFish
  *		基于 GPL-3.0 开源协议
- *		Copyright © 2020 ViudiraTech，保留所有权利。
+ *		Copyright © 2020 ViudiraTech，保留最终解释权。
  *
  */
 
@@ -13,10 +13,7 @@
 #include "common.h"
 
 /* 初始化串口 */
-int
-init_serial(
-	VOID
-	)
+int init_serial(void)
 {
 	outb(SERIAL_PORT + 1, 0x00); // 禁止COM的中断发生
 	outb(SERIAL_PORT + 3, 0x80); // 启用DLAB（设置波特率除数）。
@@ -40,38 +37,26 @@ init_serial(
 }
 
 /* 检测串口读是否就绪 */
-int
-serial_received(
-	VOID
-	)
+int serial_received(void)
 {
 	return inb(SERIAL_PORT + 5) & 1;
 }
 
 /* 读串口 */
-char
-read_serial(
-	VOID
-	)
+char read_serial(void)
 {
 	while (serial_received() == 0);
 	return inb(SERIAL_PORT);
 }
 
 /* 检测串口写是否空闲 */
-int
-is_transmit_empty(
-	VOID
-	)
+int is_transmit_empty(void)
 {
 	return inb(SERIAL_PORT + 5) & 0x20;
 }
 
 /* 写串口 */
-VOID
-write_serial(
-	char a
-	)
+void write_serial(char a)
 {
 	while (is_transmit_empty() == 0);
 	outb(SERIAL_PORT, a);
