@@ -18,6 +18,7 @@ extern "C" {
 #include "printk.h"
 #include "version.h"
 #include "gdt.h"
+#include "idt.h"
 #include "common.h"
 #include "bmp.h"
 
@@ -36,6 +37,7 @@ extern "C" void kernel_entry(FrameBufferConfig &fbc, EFI_SYSTEM_TABLE &SystemTab
 
 	printk("Initializing operating system kernel components.\n");			// 提示用户正在初始化内核
 	init_gdt(); // 初始化GDT
+	init_idt(); // 初始化IDT
 
 	while (1);
 }
